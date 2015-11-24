@@ -41,7 +41,7 @@ public class Jump3D : MonoBehaviour {
     /// <summary>
     /// Får spilleren til at hoppe.
     /// </summary>
-	void Jump(){
+	public void Jump(){
         rb.AddForce(Vector3.up * jumpHeight, ForceMode.VelocityChange);
 	}
 }

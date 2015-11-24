@@ -80,12 +80,21 @@ public class Movement3D : MonoBehaviour {
 	}
 
     /// <summary>
-    /// Flytter spilleren til start positionen.
+    /// Flytter spilleren til den valgte position.
     /// </summary>
-    /// <param name="position">Start position</param>
+    /// <param name="position">Position</param>
 	public void ResetPosition(Vector3 position){
 		rb.isKinematic = true;
 		transform.position = position;
+		rb.isKinematic = false;
+	}
+
+	/// <summary>
+	/// Flytter spilleren til start positionen.
+	/// </summary>
+	public void ResetToStartPosition(){
+		rb.isKinematic = true;
+		transform.position = startPosition;
 		rb.isKinematic = false;
 	}
 	
