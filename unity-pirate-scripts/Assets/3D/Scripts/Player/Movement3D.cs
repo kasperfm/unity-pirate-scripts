@@ -33,6 +33,21 @@ public class Movement3D : MonoBehaviour {
     public float moveSpeed = 3.0f;
 
     /// <summary>
+    /// Ganger den oprindelige hastighed med dette tal.
+    /// </summary>
+    public float runMultiplier = 6.0f;
+
+    /// <summary>
+    /// Bestemmer om man skal kunne dreje flydende/naturligt.
+    /// </summary>
+    public bool smoothTurn = true;
+
+    /// <summary>
+    /// Den hastighed 3D objektet drejer med.
+    /// </summary>
+    public float turnSpeed = 2.5f;
+
+    /// <summary>
     /// Spillerens start position.
     /// </summary>
     public Vector3 startPosition = new Vector3();
@@ -97,68 +112,75 @@ public class Movement3D : MonoBehaviour {
 		transform.position = startPosition;
 		rb.isKinematic = false;
 	}
-	
+
     // Køre denne funktion hele tiden i spillet (hver frame).
-	void Update ()
-	{
+    void LateUpdate() {
         // Tjekker om spilleren er under et bestemt punkt på Y-aksen.
-		if (transform.position.y <= resetUnderYAxis) {
-			ResetPosition(startPosition);
-		}
+        if (transform.position.y <= resetUnderYAxis) {
+            ResetPosition(startPosition);
+            transform.rotation = Quaternion.identity;
+        }
 
         // Variabel til at gemme den retning du vil bevæge dig i.
-		Vector3 movement = new Vector3 ();
+        Vector3 movement = new Vector3();
 
         // Tryk på fremad knappen.
-		if (Input.GetKey (moveForward)) {
-			if(multipleDirections){
-				movement += Vector3.forward;
-			}else{
-				movement = Vector3.forward;
-			}
-		}
-		
+        if (Input.GetKey(moveForward)) {
+            if (multipleDirections) {
+                movement += transform.forward;
+            } else {
+                movement = transform.forward;
+            }
+        }
+
         // Tryk på baglæns knappen.
-		if (Input.GetKey (moveBackwards)) {
-			if(multipleDirections){
-				movement += Vector3.back;
-			}else{
-				movement = Vector3.back;
-			}
-		}
-		
-        // Tryk på venstre knappen.
-		if (Input.GetKey (moveLeft)) {
-			if(multipleDirections){
-				movement += Vector3.left;
-			}else{
-				movement = Vector3.left;
-			}
-		}
-		
-        // Tryk på højre knappen.
-		if (Input.GetKey (moveRight)) {
-			if(multipleDirections){
-				movement += Vector3.right;
-			}else{
-				movement = Vector3.right;
-			}
-		}
+        if (Input.GetKey(moveBackwards)) {
+            if (multipleDirections) {
+                movement += transform.forward * -1f;
+            } else {
+                movement = transform.forward * -1f;
+            }
+        }
+
+
+        // Hvis objektet er en 3D model...
+        if (smoothTurn == false) {
+            // Tryk på venstre knappen.
+            if (Input.GetKey(moveLeft)) {
+                if (multipleDirections) {
+                    movement += Vector3.left;
+                } else {
+                    movement = Vector3.left;
+                }
+            }
+
+            // Tryk på højre knappen.
+            if (Input.GetKey(moveRight)) {
+                if (multipleDirections) {
+                    movement += Vector3.right;
+                } else {
+                    movement = Vector3.right;
+                }
+            }
+        } else {
+            // Hvis objektet er noget andet end en 3D model.
+            transform.Rotate(new Vector3(0, Input.GetAxis("Horizontal") * turnSpeed, 0), Space.World);
+        }
 
         // Tjekker om løbe-knappen er holdt nede.
-        // Hvis ja, så ganger vi hastigheden med 6.
-		if (Input.GetKey (runButton)) {
-			moveSpeed = origMoveSpeed * 6;
-		} else {
-			moveSpeed = origMoveSpeed;
-		}
+        // Hvis ja, så ganger vi hastigheden med værdien af runMultiplier.
+        if (Input.GetKey(runButton)) {
+            moveSpeed = origMoveSpeed * runMultiplier;
+        } else {
+            moveSpeed = origMoveSpeed;
+        }
 
         // Bruger force til at bevæge spilleren med hvis du er en bold.
         // Ellers bevæg dig normalt.
-		if (playerObjectType == PlayerObjectType.Ball) {
-			rb.AddForce (movement * moveSpeed, ForceMode.VelocityChange);
-		} else if (playerObjectType == PlayerObjectType.Cube && movement != Vector3.zero) {
-			transform.Translate((movement * moveSpeed) * Time.deltaTime, Space.World);
-		}
-	}
+        if (playerObjectType == PlayerObjectType.Ball) {
+            rb.AddForce(movement * moveSpeed, ForceMode.VelocityChange);
+        } else if (movement != Vector3.zero) {
+            transform.Translate((movement * moveSpeed) * Time.deltaTime, Space.World);
+        }
+    }
 }
