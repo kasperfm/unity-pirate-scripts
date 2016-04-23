@@ -44,6 +44,11 @@ public class Movement3D : MonoBehaviour {
     public bool smoothTurn = true;
 
     /// <summary>
+    /// Hvilken akse skal der bruges til smmothTurn.
+    /// </summary>
+    public string smoothTurnAxis = "Horizontal";
+
+    /// <summary>
     /// Den hastighed 3D objektet drejer med.
     /// </summary>
     public float turnSpeed = 2.5f;
@@ -158,7 +163,7 @@ public class Movement3D : MonoBehaviour {
             }
         } else {
             // Hvis smoothTurn er slået til...
-            transform.Rotate(new Vector3(0, Input.GetAxis("Horizontal") * turnSpeed, 0), Space.World);
+            transform.Rotate(new Vector3(0, Input.GetAxis(smoothTurnAxis) * turnSpeed, 0), Space.World);
         }
 
         // Tjekker om løbe-knappen er holdt nede.

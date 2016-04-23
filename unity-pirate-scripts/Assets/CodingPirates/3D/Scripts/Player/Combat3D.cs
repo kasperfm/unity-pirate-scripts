@@ -67,6 +67,16 @@ public class Combat3D : MonoBehaviour {
 		OnDie.Invoke();
 	}
 
+    /// <summary>
+    /// Afspiller en lyd på objektets AudioSource komponent.
+    /// </summary>
+    /// <param name="sound">Lyden der skal afspilles</param>
+    public void PlaySound(AudioClip sound) {
+        if (GetComponent<AudioSource>()) {
+            GetComponent<AudioSource>().PlayOneShot(sound);
+        }
+    }
+
     // Update udføres hele tiden i spillet.
 	void Update(){
 		if (Input.GetKeyUp(shootButton)) {
